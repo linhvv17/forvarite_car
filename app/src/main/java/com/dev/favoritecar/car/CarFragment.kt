@@ -1,14 +1,12 @@
 package com.dev.favoritecar.car
 
 import android.os.Bundle
-import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dev.favoritecar.R
-import com.dev.favoritecar.carstore.CarStoreFragment
 import com.dev.favoritecar.databinding.CarFragmentBinding
 import com.dev.favoritecar.model.Car
 import com.raywenderlich.android.monsters.base.BaseApplication
@@ -37,9 +35,7 @@ class CarFragment : Fragment() {
     }
 
     fun getCars(): Car {
-        val cars = CarData.getListOfCars(requireContext())
-
-        return cars[0]
+        return CarData.getMyCar(requireContext())
     }
 
 

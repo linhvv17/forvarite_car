@@ -33,7 +33,9 @@
  */
 
 
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dev.favoritecar.carstore.CarStoreFragment
@@ -57,8 +59,17 @@ class CarsAdapter(
         this.car = car
         container.setOnClickListener {
           onItemClickListener(car)
+          Log.d("onItemClickListener", "onItemClickListener: " + car.name)
         }
       }
+//      carStoreFragment.getSkuPrice(car.sku)?.
+//      observe(carStoreFragment.viewLifecycleOwner) {
+//        binding.skuPrice.apply {
+//          text = it
+//          visibility = View.VISIBLE
+//        }
+//      }
+
 
       // TODO: observe getSkuPrice and set the price for every monster
 

@@ -40,43 +40,54 @@ import com.dev.favoritecar.model.Car
 
 
 object CarData {
-  fun getListOfCars(context: Context) : List<Car> = listOf(
+  fun getListOfCars(context: Context)  = listOf(
 
       Car(
           name = context.getString(R.string.kia),
           picture = R.drawable.kia_1,
-          sku = null,
+          sku = "pick1",
           strength = 100
       ),
       Car(
           name = context.getString(R.string.huyndai),
           picture = R.drawable.huyndai_2,
-          sku = null,
+          sku = "pick2",
           strength = 200
       ),
       Car(
           name = context.getString(R.string.mazda),
           picture = R.drawable.mazda_3,
-          sku = null,
+          sku = "pick3",
           strength = 300
       ),
       Car(
           name = context.getString(R.string.mec),
           picture = R.drawable.mec_4,
-          sku = null,
+          sku = "pick4",
           strength = 400
       ),
       Car(
           name = context.getString(R.string.ford),
           picture = R.drawable.ford_5,
-          sku = null,
+          sku = "pick5",
           strength = 500
       ),
       Car(
           name = context.getString(R.string.lamborghini),
           picture = R.drawable.lamborghini_6,
-          sku = null,
+          sku = "pick6",
           strength = 600
       )
   )
+
+
+
+    fun getMyCar(context: Context) : Car =
+        Car(
+            name = context.getString(R.string.kia),
+            picture = R.drawable.kia_1,
+            sku = null,
+            strength = 100
+        )
+    
 }

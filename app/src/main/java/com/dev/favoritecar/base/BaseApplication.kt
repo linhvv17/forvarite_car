@@ -35,9 +35,7 @@
 package com.raywenderlich.android.monsters.base
 
 import android.app.Application
-import com.dev.favoritecar.CAR_LEVEL_2
-import com.dev.favoritecar.CAR_LEVEL_3
-import com.dev.favoritecar.CAR_LEVEL_4
+import com.dev.favoritecar.*
 import com.raywenderlich.android.monsters.billing.BillingHelper
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -54,7 +52,9 @@ class BaseApplication : Application() {
         arrayOf(
             CAR_LEVEL_2,
             CAR_LEVEL_3,
-            CAR_LEVEL_4
+            CAR_LEVEL_4,
+            CAR_LEVEL_5,
+            CAR_LEVEL_6,
 
         ),
         arrayOf("") // no consumable skus

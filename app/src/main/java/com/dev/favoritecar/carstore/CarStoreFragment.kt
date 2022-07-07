@@ -14,17 +14,25 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.billingclient.api.*
 import com.dev.favoritecar.R
 import com.dev.favoritecar.databinding.CarStoreFragmentBinding
+import com.google.common.collect.ImmutableList
 import com.raywenderlich.android.monsters.base.BaseApplication
 
 
 class CarStoreFragment : Fragment() {
 
     private lateinit var binding: CarStoreFragmentBinding
-    private val billingHelper by lazy {
-        (requireActivity().application as BaseApplication).appContainer.bill
-    }
+//    private val billingHelper by lazy {
+//        (requireActivity().application as BaseApplication).appContainer.bill
+//    }
 
     private var billingClient: BillingClient? = null
+
+
+    private lateinit var listSku: List<SkuDetails?>
+
+    private var skuTest = ""
+
+    private var productDetails: ProductDetails? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,11 +77,10 @@ class CarStoreFragment : Fragment() {
 
         val adapter = CarsAdapter(
             this,
-        onItemClickListener = {
-//                purchase -> Toast.makeText(context, "Click buy", Toast.LENGTH_LONG).show()
-                purchase ->
+        ) {
+                purchase -> {}
             makePurchase(purchase.sku)
-        })
+        }
 
         binding.carsList.apply {
             this.adapter = adapter
@@ -82,46 +89,120 @@ class CarStoreFragment : Fragment() {
     }
 
 
-    fun getSkuPrice(sku: String?) : LiveData<String>? {
-        if (null == sku) return null
-        return billingHelper.getSkuPrice(sku).asLiveData()
-    }
+    private fun makePurchase(skuId: String?) {
+//        Log.d("AAAA", " sku is: " + sku.toString())
 
-    fun makePurchase(sku: String?) {
-        if (null != sku) {
-            billingHelper.launchBillingFlow(requireActivity(), sku)
+        //query infor product
+
+        queryProducts()
+
+
+        val queryProductDetailsParams =
+            QueryProductDetailsParams.newBuilder()
+                .setProductList(
+                    ImmutableList.of(
+                        skuId?.let {
+                            QueryProductDetailsParams.Product.newBuilder()
+                                .setProductId(it)
+                                .setProductType(BillingClient.ProductType.INAPP)
+                                .build()
+                        }))
+                .build()
+
+        billingClient?.queryProductDetailsAsync(
+            queryProductDetailsParams,
+            ProductDetailsResponseListener { billingResult, productDetailsList ->
+                // check billingResult
+                // process returned productDetailsList
+                skuTest = productDetailsList[0].toString()
+                productDetails = productDetailsList[0]
+
+                Log.d("skuDetails", skuTest.toString() + "\n")
+                Log.d("skuDetails", "--------------")
+
+            }
+        )
+
+
+
+
+
+
+        if (null != skuTest) {
+            val billingFlowParams = BillingFlowParams.newBuilder()
+                .setProductDetailsParamsList(
+                    ImmutableList.of(
+                        productDetails?.let {
+                            BillingFlowParams.ProductDetailsParams.newBuilder()
+                                .setProductDetails(it)
+                                .build()
+                        }
+                    )
+                )
+                .build()
+            val billingResult = billingClient?.launchBillingFlow(requireActivity(), billingFlowParams)
+
         } else {
-            Toast.makeText(requireContext(), getString(R.string.item_not_available), Toast
-                .LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(), getString(R.string.item_not_available), Toast
+                    .LENGTH_SHORT
+            ).show()
         }
     }
 
 
     private fun queryProducts() {
-        Log.d("AAAA", "queryProducts")
-        // TODO: tạo list các product id (chính là product id bạn đã nhập ở bước trước) để lấy thông tin
-        val productIds: MutableList<String> = ArrayList()
-        productIds.add("pack1")
-        val skuDetailsParams = SkuDetailsParams.newBuilder()
-            .setSkusList(productIds)
-            .setType(BillingClient.SkuType.INAPP) //TODO: Sử dụng INAPP với one-time product và SUBS với các gói subscriptions.
-            .build()
+        val productList: MutableList<QueryProductDetailsParams.Product> = ArrayList()
 
-        // TODO: Thực hiện query
-        billingClient!!.querySkuDetailsAsync(
-            skuDetailsParams
-        ) { billingResult: BillingResult?, list: List<SkuDetails?>? ->
-            Log.d("AAAA", "querySku")
-            if (list != null) {
-                Log.d("AAAA", "#null")
-                for (skuDetails in list) {
-                    Log.d("AAAA", skuDetails.toString())
-                    Log.d("AAAA", "skuDetails")
+        productList.add(
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId("pack1")
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build()
+        )
+
+        productList.add(
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId("pack2")
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build()
+        )
+
+        productList.add(
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId("pack3")
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build()
+        )
+
+
+        val queryProductDetailsParams =
+            QueryProductDetailsParams.newBuilder()
+                .setProductList(
+                    productList
+                )
+                .build()
+
+        billingClient!!.queryProductDetailsAsync(
+            queryProductDetailsParams,
+            ProductDetailsResponseListener { billingResult, productDetailsList ->
+                // check billingResult
+                // process returned productDetailsList
+
+                for (skuDetails in productDetailsList) {
+                    Log.d("skuDetails", skuDetails.toString() + "\n")
+                    Log.d("skuDetails", "--------------")
+                    productDetails = productDetailsList[0]
+
                 }
-            }
-        }
-    }
 
+                skuTest = productDetailsList[0].toString()
+
+            }
+        )
+
+
+    }
 
 
 }
