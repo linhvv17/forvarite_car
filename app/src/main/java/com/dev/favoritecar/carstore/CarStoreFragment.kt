@@ -40,31 +40,19 @@ class CarStoreFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = CarStoreFragmentBinding.inflate(layoutInflater)
-
-
-
         billingClient = context?.let {
             BillingClient.newBuilder(it)
                 .enablePendingPurchases()
                 .setListener { billingResult: BillingResult?, list: List<Purchase?>? -> }
                 .build()
         }
-
-        //TODO: Connect ứng dụng của bạn với Google Billing
-
-        //TODO: Connect ứng dụng của bạn với Google Billing
         billingClient?.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
-                //TODO: Sau khi connect thành công, thử lấy thông tin các sản phẩm
-
                 Log.d("AAAA", "Connected")
-
-
-                queryProducts()
+//                queryProducts()
             }
 
             override fun onBillingServiceDisconnected() {
-                //TODO: Connect Google Play not success
             }
         })
 
@@ -79,7 +67,7 @@ class CarStoreFragment : Fragment() {
             this,
         ) {
                 purchase -> {}
-            makePurchase(purchase.sku)
+            queryProducts(purchase.position)
         }
 
         binding.carsList.apply {
@@ -89,69 +77,8 @@ class CarStoreFragment : Fragment() {
     }
 
 
-    private fun makePurchase(skuId: String?) {
-//        Log.d("AAAA", " sku is: " + sku.toString())
 
-        //query infor product
-
-        queryProducts()
-
-
-        val queryProductDetailsParams =
-            QueryProductDetailsParams.newBuilder()
-                .setProductList(
-                    ImmutableList.of(
-                        skuId?.let {
-                            QueryProductDetailsParams.Product.newBuilder()
-                                .setProductId(it)
-                                .setProductType(BillingClient.ProductType.INAPP)
-                                .build()
-                        }))
-                .build()
-
-        billingClient?.queryProductDetailsAsync(
-            queryProductDetailsParams,
-            ProductDetailsResponseListener { billingResult, productDetailsList ->
-                // check billingResult
-                // process returned productDetailsList
-                skuTest = productDetailsList[0].toString()
-                productDetails = productDetailsList[0]
-
-                Log.d("skuDetails", skuTest.toString() + "\n")
-                Log.d("skuDetails", "--------------")
-
-            }
-        )
-
-
-
-
-
-
-        if (null != skuTest) {
-            val billingFlowParams = BillingFlowParams.newBuilder()
-                .setProductDetailsParamsList(
-                    ImmutableList.of(
-                        productDetails?.let {
-                            BillingFlowParams.ProductDetailsParams.newBuilder()
-                                .setProductDetails(it)
-                                .build()
-                        }
-                    )
-                )
-                .build()
-            val billingResult = billingClient?.launchBillingFlow(requireActivity(), billingFlowParams)
-
-        } else {
-            Toast.makeText(
-                requireContext(), getString(R.string.item_not_available), Toast
-                    .LENGTH_SHORT
-            ).show()
-        }
-    }
-
-
-    private fun queryProducts() {
+    private fun queryProducts(position : Int) {
         val productList: MutableList<QueryProductDetailsParams.Product> = ArrayList()
 
         productList.add(
@@ -175,6 +102,27 @@ class CarStoreFragment : Fragment() {
                 .build()
         )
 
+        productList.add(
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId("pack4")
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build()
+        )
+
+        productList.add(
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId("pack5")
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build()
+        )
+
+        productList.add(
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId("pack6")
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build()
+        )
+
 
         val queryProductDetailsParams =
             QueryProductDetailsParams.newBuilder()
@@ -186,17 +134,22 @@ class CarStoreFragment : Fragment() {
         billingClient!!.queryProductDetailsAsync(
             queryProductDetailsParams,
             ProductDetailsResponseListener { billingResult, productDetailsList ->
-                // check billingResult
-                // process returned productDetailsList
+                productDetails = productDetailsList[position]
+                skuTest = productDetailsList[position].toString()
+                Log.d("skuTest", skuTest)
 
-                for (skuDetails in productDetailsList) {
-                    Log.d("skuDetails", skuDetails.toString() + "\n")
-                    Log.d("skuDetails", "--------------")
-                    productDetails = productDetailsList[0]
-
-                }
-
-                skuTest = productDetailsList[0].toString()
+                val billingFlowParams = BillingFlowParams.newBuilder()
+                    .setProductDetailsParamsList(
+                        ImmutableList.of(
+                            productDetails?.let {
+                                BillingFlowParams.ProductDetailsParams.newBuilder()
+                                    .setProductDetails(it)
+                                    .build()
+                            }
+                        )
+                    )
+                    .build()
+                val billingResult = billingClient?.launchBillingFlow(requireActivity(), billingFlowParams)
 
             }
         )

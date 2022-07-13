@@ -43,36 +43,42 @@ object CarData {
   fun getListOfCars(context: Context)  = listOf(
 
       Car(
+          position = 0,
           name = context.getString(R.string.kia),
           picture = R.drawable.kia_1,
           sku = "pick1",
           strength = 100
       ),
       Car(
+          position = 1,
           name = context.getString(R.string.huyndai),
           picture = R.drawable.huyndai_2,
           sku = "pick2",
           strength = 200
       ),
       Car(
+          position = 2,
           name = context.getString(R.string.mazda),
           picture = R.drawable.mazda_3,
           sku = "pick3",
           strength = 300
       ),
       Car(
+          position = 3,
           name = context.getString(R.string.mec),
           picture = R.drawable.mec_4,
           sku = "pick4",
           strength = 400
       ),
       Car(
+          position = 4,
           name = context.getString(R.string.ford),
           picture = R.drawable.ford_5,
           sku = "pick5",
           strength = 500
       ),
       Car(
+          position = 5,
           name = context.getString(R.string.lamborghini),
           picture = R.drawable.lamborghini_6,
           sku = "pick6",
@@ -84,6 +90,7 @@ object CarData {
 
     fun getMyCar(context: Context) : Car =
         Car(
+            position = 0,
             name = context.getString(R.string.kia),
             picture = R.drawable.kia_1,
             sku = null,
