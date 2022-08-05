@@ -1,5 +1,7 @@
 package com.dev.favoritecar.car
 
+import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.dev.favoritecar.R
 import com.dev.favoritecar.databinding.CarFragmentBinding
 import com.dev.favoritecar.model.Car
-import com.raywenderlich.android.monsters.base.BaseApplication
+import com.dev.favoritecar.base.BaseApplication
 import com.raywenderlich.android.monsters.repository.CarData
 
 class CarFragment : Fragment() {

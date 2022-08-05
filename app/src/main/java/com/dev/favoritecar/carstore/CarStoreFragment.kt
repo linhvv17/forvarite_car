@@ -1,24 +1,26 @@
 package com.dev.favoritecar.carstore
 
 import CarsAdapter
+import android.app.AlertDialog
+import android.content.Context.LAYOUT_INFLATER_SERVICE
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.billingclient.api.*
 import com.dev.favoritecar.R
 import com.dev.favoritecar.databinding.CarStoreFragmentBinding
 import com.google.common.collect.ImmutableList
-import com.raywenderlich.android.monsters.base.BaseApplication
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 
-class CarStoreFragment : Fragment() {
+class CarStoreFragment(override val coroutineContext: CoroutineContext) : Fragment(), PurchasesUpdatedListener, CoroutineScope {
 
     private lateinit var binding: CarStoreFragmentBinding
 //    private val billingHelper by lazy {
@@ -26,6 +28,8 @@ class CarStoreFragment : Fragment() {
 //    }
 
     private var billingClient: BillingClient? = null
+//    private var billingClient: BillingClient? = billingHelper.
+
 
 
     private lateinit var listSku: List<SkuDetails?>
@@ -49,11 +53,12 @@ class CarStoreFragment : Fragment() {
         billingClient?.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 Log.d("AAAA", "Connected")
-//                queryProducts()
+
             }
 
             override fun onBillingServiceDisconnected() {
             }
+
         })
 
         return binding.root
@@ -68,6 +73,7 @@ class CarStoreFragment : Fragment() {
         ) {
                 purchase -> {}
             queryProducts(purchase.position)
+
         }
 
         binding.carsList.apply {
@@ -133,7 +139,7 @@ class CarStoreFragment : Fragment() {
 
         billingClient!!.queryProductDetailsAsync(
             queryProductDetailsParams,
-            ProductDetailsResponseListener { billingResult, productDetailsList ->
+            ProductDetailsResponseListener { billingResult1, productDetailsList ->
                 productDetails = productDetailsList[position]
                 skuTest = productDetailsList[position].toString()
                 Log.d("skuTest", skuTest)
@@ -155,7 +161,63 @@ class CarStoreFragment : Fragment() {
         )
 
 
+
+    }
+
+    override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
+        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+            for (purchase in purchases) {
+                val consumeParams =
+                    ConsumeParams.newBuilder()
+                        .setPurchaseToken(purchase.purchaseToken)
+                        .build()
+
+
+                val listener = ConsumeResponseListener { billingResult, purchaseToken ->
+                        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                            val inflater = this.requireActivity().getSystemService(
+                                LAYOUT_INFLATER_SERVICE
+                            ) as LayoutInflater
+                            val v: View = inflater.inflate(R.layout.thank_popup, null)
+                            AlertDialog.Builder(this.requireActivity())
+                                .setIcon(R.mipmap.ic_launcher)
+                                .setView(v)
+                                .setTitle("Thank you")
+                                .setMessage("Have a nice day!")
+                                .show()
+                        }
+                    }
+                billingClient!!.consumeAsync(consumeParams, listener)
+
+            }
+        } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+            // Handle an error caused by a user cancelling the purchase flow.
+        } else {
+            // Handle any other error codes.
+        }
+
+    }
+
+
+
+    suspend fun handlePurchase(pur: Purchase) {
+        // Purchase retrieved from BillingClient#queryPurchasesAsync or your PurchasesUpdatedListener.
+        val purchase : Purchase = pur
+
+        // Verify the purchase.
+        // Ensure entitlement was not already granted for this purchaseToken.
+        // Grant entitlement to the user.
+
+        val consumeParams =
+            ConsumeParams.newBuilder()
+                .setPurchaseToken(purchase.getPurchaseToken())
+                .build()
+        val consumeResult = withContext(Dispatchers.IO) {
+            billingClient!!.consumePurchase(consumeParams)
+        }
     }
 
 
 }
+
+

@@ -8,10 +8,12 @@
         <entry key="app/src/main/res/layout/activity_in_app.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.20923913043478262" />
         <entry key="app/src/main/res/layout/activity_spalsh.xml" value="0.17083333333333334" />
+        <entry key="app/src/main/res/layout/car_fragment.xml" value="0.14792646430098333" />
         <entry key="app/src/main/res/layout/car_item.xml" value="0.18489583333333334" />
         <entry key="app/src/main/res/layout/car_store_fragment.xml" value="0.18489583333333334" />
         <entry key="app/src/main/res/layout/monster_fragment.xml" value="0.18489583333333334" />
         <entry key="app/src/main/res/layout/monster_store_fragment.xml" value="0.18489583333333334" />
+        <entry key="app/src/main/res/layout/thank_popup.xml" value="0.1470713980333476" />
       </map>
     </option>
   </component>

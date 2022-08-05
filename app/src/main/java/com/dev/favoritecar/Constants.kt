@@ -39,8 +39,9 @@ package com.dev.favoritecar
 const val PUBLIC_KEY = "YOUR_KEY"
 
 // SKU
-const val CAR_LEVEL_2 = "car_level_2"
-const val CAR_LEVEL_3 = "car_level_3"
-const val CAR_LEVEL_4 = "car_level_4"
-const val CAR_LEVEL_5 = "car_level_5"
-const val CAR_LEVEL_6 = "car_level_6"
+const val CAR_LEVEL_1 = "pick1"
+const val CAR_LEVEL_2 = "pick2"
+const val CAR_LEVEL_3 = "pick3"
+const val CAR_LEVEL_4 = "pick4"
+const val CAR_LEVEL_5 = "pick5"
+const val CAR_LEVEL_6 = "pick6"

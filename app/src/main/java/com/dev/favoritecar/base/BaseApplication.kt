@@ -32,15 +32,13 @@
  * THE SOFTWARE.
  */
 
-package com.raywenderlich.android.monsters.base
+package com.dev.favoritecar.base
 
 import android.app.Application
 import com.dev.favoritecar.*
 import com.raywenderlich.android.monsters.billing.BillingHelper
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 
-@DelicateCoroutinesApi
 class BaseApplication : Application() {
   lateinit var appContainer: AppContainer
 
@@ -50,6 +48,7 @@ class BaseApplication : Application() {
         this@BaseApplication,
         applicationScope,
         arrayOf(
+            CAR_LEVEL_1,
             CAR_LEVEL_2,
             CAR_LEVEL_3,
             CAR_LEVEL_4,
